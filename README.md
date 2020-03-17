@@ -36,5 +36,16 @@ Access URL: http://localhost:8000/
 
 ## Try call the API get all method in your browser
 
-http://localhost:8000/api/countrys
+http://localhost:8000/api/countrys/1
 
+
+## Method to filter by IP
+
+http://localhost:8000/api/locationByIP/43.242.4.0
+
+
+## Run the unit test
+
+```sh
+$ phpunit
+```
