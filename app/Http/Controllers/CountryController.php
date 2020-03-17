@@ -30,7 +30,7 @@ class CountryController extends Controller
      */
     public function show(Country $country)
     {
-        return $country;
+        return response()->json($country, 200);
     }
 
     /**
@@ -81,8 +81,13 @@ class CountryController extends Controller
      */
     public function locationByIp(string $ip)
     {
-        $country = Country::where('ip', strval($ip))->first();
+        $country = Country::where('ip', $ip)->first();
+        //$country = DB::table('countries')->where('ip', $ip)->first();
 
-        return response()->json($country->name, 200);
+        if(!is_null($country)) {
+            return response()->json($country->name, 200);
+        }
+
+        return response()->json([], 200);
     }
 }

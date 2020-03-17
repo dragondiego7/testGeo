@@ -8,5 +8,4 @@ class Country extends Model
 {
     protected $fillable = ['ip', 'mask', "num_start", "num_end", "initials", "name"];
 
-
 }

@@ -47,5 +47,5 @@ http://localhost:8000/api/locationByIP/43.242.4.0
 ## Run the unit test
 
 ```sh
-$ phpunit
+$  vendor/bin/phpunit tests/Feature/CountryTest.php
 ```
