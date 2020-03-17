@@ -2,19 +2,33 @@
 
 ## First Clone the project
 
-git clone <<URL project>>
+```sh
+$ git clone <https://github.com/dragondiego7/testGeo.git>
+```
 
 ## Install composer dependencies
 
-composer install
+```sh
+$ composer install
+```
 
-## Run the command to create and populate database. In your console run
+## Run the command to create database. In your console run
 
-php artisan app:loadflux
+```sh
+$ php artisan make:database testGeo mysql_create
+```
+
+## Populate database. In your console run
+
+```sh
+$ php artisan app:loadflux
+```
 
 ## Lets up the application
 
-php artisan serve
+```sh
+$ php artisan serve
+```
 
 ## Now you can load the application in your browser or make some test in the postman
 

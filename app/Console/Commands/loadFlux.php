@@ -3,6 +3,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Client;
+use App\Country;
+use Illuminate\Support\Facades\Storage;
 
 class loadFlux extends Command
 {
@@ -39,10 +43,42 @@ class loadFlux extends Command
     {
         $this->info('Begin Flux');
 
-        $this->call('--version');
+        $this->line('Validate database register');
+        
+        $country = Country::all();
 
-        //$this->artisan
+        if(count($country) == 0) {
+            $this->populateCountry();
+        }
+
+        //$this->error('Something went wrong!');
 
         $this->info('End Flux');
     }
+
+    /**
+     * Function to populate table country
+     *
+     * @return void
+     */
+    protected function populateCountry()
+    {
+        $this->downloadFile();
+        
+        Storage::
+    }
+
+    /**
+     * Function to download file and recovery your content
+     *
+     * @return void
+     */
+    protected function downloadFile()
+    {
+        $url = env("URL_COUNTRYIPCSV");
+        $guzzle = new Client();
+        $response = $guzzle->get($url);
+        Storage::put('GeoIPCountryCSV.zip', $response->getBody());
+    } 
+
 }
