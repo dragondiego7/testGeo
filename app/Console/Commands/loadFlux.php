@@ -71,31 +71,36 @@ class loadFlux extends Command
 
         $fileContentArray = explode("\n", $fileContent);
 
+        DB::beginTransaction();
+
+        try{
+
         
-        foreach($fileContentArray as $key => $line) {
-            $this->line('Load Countrys');
-            $countryArray = explode(",", $line);
+            foreach($fileContentArray as $key => $line) {
+                $this->line('Load Countrys');
+                $countryArray = explode(",", $line);
 
-            $numStart = $countryArray[2];
-            $numStart = str_replace('"', "", $numStart);
-            $numStart = intval($numStart);
+                $countryArray = $this->formatFieldsCountry($countryArray);
 
-            $numEnd = $countryArray[2];
-            $numEnd = str_replace('"', "", $numEnd);
-            $numEnd = intval($numEnd);
+                
 
-            $country["ip"] = $countryArray[0];
-            $country["mask"] = $countryArray[1];
-            $country["num_start"] = $numStart;
-            $country["num_end"] = $numEnd;
-            $country["initials"] = $countryArray[4];
-            $country["name"] = $countryArray[5];
-            
-            Country::Create($country);
+                $country["ip"] = $countryArray[0];
+                $country["mask"] = $countryArray[1];
+                $country["num_start"] = $numStart;
+                $country["num_end"] = $numEnd;
+                $country["initials"] = $countryArray[4];
+                $country["name"] = $countryArray[5];
+                
+                Country::Create($country);
 
-            if($key == 3){
-                break;
+                if($key == 5) {
+                    DB::commit();
+                    break;
+                }
             }
+        } catch (\Exception $e ){
+            $this->error($e->getMessage());
+            DB::rollBack();
         }
 
         $this->line('End Load Countrys');
@@ -132,6 +137,24 @@ class loadFlux extends Command
         } else {
             $this->error('Failed to extract the file!');
         }
+    }
+
+    /**
+     * Function to formater fields before insert to database
+     *
+     * @param array $fieldsArray
+     * @return void
+     */
+    protected function formatFieldsCountry(array $fieldsArray){
+        foreach($fieldsArray as $field){
+            $fieldsArray[$key] = str_replace('"', "", $field);
+        }
+
+        $fieldsArray[2] = intval($fieldsArray[2]);
+
+        $fieldsArray[3] = intval($fieldsArray[3]);
+
+        return $fieldsArray;
     }
 
 }
