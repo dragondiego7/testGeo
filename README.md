@@ -3,7 +3,7 @@
 ## First Clone the project
 
 ```sh
-$ git clone <https://github.com/dragondiego7/testGeo.git>
+$ git clone https://github.com/dragondiego7/testGeo.git
 ```
 
 ## Install composer dependencies

@@ -48,10 +48,9 @@ class loadFlux extends Command
         $country = Country::all();
 
         if(count($country) == 0) {
+            $this->line('Start Process to populate database');
             $this->populateCountry();
         }
-
-        //$this->error('Something went wrong!');
 
         $this->info('End Flux');
     }
@@ -64,8 +63,28 @@ class loadFlux extends Command
     protected function populateCountry()
     {
         $this->downloadFile();
+
+        $this->extractFile();
         
-        Storage::
+        $fileContent = Storage::get("GeoIPCountryWhois.csv");
+
+        $fileContentArray = explode("\n", $fileContent);
+        
+        foreach($fileContentArray as $line) {
+            $this->line('Load Countrys');
+            $countryArray = explode(",", $line);
+
+            $country["ip"] = $countryArray[0];
+            $country["mask"] = $countryArray[1];
+            $country["num_start"] = intval($countryArray[2]);
+            $country["num_end"] = intval($countryArray[3]);
+            $country["initials"] = $countryArray[4];
+            $country["name"] = $countryArray[5];
+            
+            Country::Create($country);
+        }
+
+        $this->line('End Load Countrys');
     }
 
     /**
@@ -79,6 +98,26 @@ class loadFlux extends Command
         $guzzle = new Client();
         $response = $guzzle->get($url);
         Storage::put('GeoIPCountryCSV.zip', $response->getBody());
-    } 
+    }
+
+    /**
+     * Function to extract files
+     *
+     * @return void
+     */
+    protected function extractFile()
+    {
+        $zip = new \ZipArchive;
+
+        $path = storage_path('app');
+        
+        if ($zip->open($path . '\GeoIPCountryCSV.zip') === TRUE) {
+            $zip->extractTo($path);
+            $zip->close();
+            $this->info('File Extract with sucess');
+        } else {
+            $this->error('Failed to extract the file!');
+        }
+    }
 
 }
