@@ -1,4 +1,4 @@
-# Test to show country in the api from the amazon file
+# Test to expose API with countries and yours IPs
 
 ## First Clone the project
 
