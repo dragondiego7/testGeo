@@ -47,7 +47,8 @@ class loadFlux extends Command
         
         $country = Country::all();
 
-        if(count($country) == 0) {
+        // TODO revert here to equal 0!!! XXXXXXXXXXXXXXXXXXXXXXXXX
+        if(count($country) > 0) {
             $this->line('Start Process to populate database');
             $this->populateCountry();
         }
@@ -69,19 +70,32 @@ class loadFlux extends Command
         $fileContent = Storage::get("GeoIPCountryWhois.csv");
 
         $fileContentArray = explode("\n", $fileContent);
+
         
-        foreach($fileContentArray as $line) {
+        foreach($fileContentArray as $key => $line) {
             $this->line('Load Countrys');
             $countryArray = explode(",", $line);
 
+            $numStart = $countryArray[2];
+            $numStart = str_replace('"', "", $numStart);
+            $numStart = intval($numStart);
+
+            $numEnd = $countryArray[2];
+            $numEnd = str_replace('"', "", $numEnd);
+            $numEnd = intval($numEnd);
+
             $country["ip"] = $countryArray[0];
             $country["mask"] = $countryArray[1];
-            $country["num_start"] = intval($countryArray[2]);
-            $country["num_end"] = intval($countryArray[3]);
+            $country["num_start"] = $numStart;
+            $country["num_end"] = $numEnd;
             $country["initials"] = $countryArray[4];
             $country["name"] = $countryArray[5];
             
             Country::Create($country);
+
+            if($key == 3){
+                break;
+            }
         }
 
         $this->line('End Load Countrys');
